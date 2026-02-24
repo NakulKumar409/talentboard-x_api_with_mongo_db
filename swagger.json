@@ -1,0 +1,134 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MessMate API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3004"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Check server health",
+        "responses": {
+          "200": {
+            "description": "Server is healthy"
+          }
+        }
+      }
+    },
+    "/messes": {
+      "get": {
+        "summary": "Get all messes",
+        "responses": {
+          "200": {
+            "description": "List of messes"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new mess",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "location": { "type": "string" },
+                  "price": { "type": "number" },
+                  "rating": { "type": "number" }
+                },
+                "required": ["name", "location", "price"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mess created"
+          }
+        }
+      }
+    },
+    "/messes/{id}": {
+      "get": {
+        "summary": "Get mess by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single mess"
+          },
+          "404": {
+            "description": "Mess not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update mess by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "location": { "type": "string" },
+                  "price": { "type": "number" },
+                  "rating": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mess updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete mess by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mess deleted"
+          }
+        }
+      }
+    }
+  }
+}
