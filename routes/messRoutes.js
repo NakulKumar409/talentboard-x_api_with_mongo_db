@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const messController = require("../controllers/messController");
+const verifyToken = require("../middleware/authMiddleware");
+
+router.use(verifyToken);
 
 router.get("/", messController.getAllMesses);
 router.get("/:id", messController.getMessById);
