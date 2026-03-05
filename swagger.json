@@ -1,24 +1,40 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "MessMate API",
-    "version": "1.0.0"
+    "title": "TalentBoard + MessMate API",
+    "version": "1.0.0",
+    "description": "Complete API Documentation with Job Application Management"
   },
+
   "servers": [
     {
       "url": "http://localhost:3004"
     }
   ],
+
   "tags": [
     {
       "name": "Auth",
-      "description": "Authentication APIs (Register & Login)"
+      "description": "Authentication APIs"
     },
     {
-      "name": "MessMate API",
-      "description": "All Mess management APIs"
+      "name": "MessMate",
+      "description": "Mess management APIs"
+    },
+    {
+      "name": "Jobs",
+      "description": "Job CRUD APIs"
+    },
+    {
+      "name": "Applications",
+      "description": "Job application APIs"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard statistics APIs"
     }
   ],
+
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -26,32 +42,159 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
+    },
+    "schemas": {
+      "Application": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "665abc123def456" },
+          "jobId": { "type": "string", "example": "665abc123" },
+          "userId": { "type": "string", "example": "665user123" },
+          "fullName": { "type": "string", "example": "Nakul Kumar" },
+          "email": { "type": "string", "example": "nakul@gmail.com" },
+          "phone": { "type": "string", "example": "9876543210" },
+          "dob": {
+            "type": "string",
+            "format": "date",
+            "example": "1995-05-15"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["Male", "Female", "Other"],
+            "example": "Male"
+          },
+          "address": { "type": "string", "example": "123 Main Street" },
+          "city": { "type": "string", "example": "Mumbai" },
+          "state": { "type": "string", "example": "Maharashtra" },
+          "country": { "type": "string", "example": "India" },
+          "pincode": { "type": "string", "example": "400001" },
+          "aadhaar": { "type": "string", "example": "1234-5678-9012" },
+          "pan": { "type": "string", "example": "ABCDE1234F" },
+          "uan": { "type": "string", "example": "123456789012" },
+          "tenthBoard": { "type": "string", "example": "CBSE" },
+          "tenthPercentage": { "type": "number", "example": 88.5 },
+          "tenthYear": { "type": "number", "example": 2012 },
+          "twelfthBoard": { "type": "string", "example": "CBSE" },
+          "twelfthPercentage": { "type": "number", "example": 85.5 },
+          "twelfthYear": { "type": "number", "example": 2014 },
+          "graduationCollege": {
+            "type": "string",
+            "example": "Mumbai University"
+          },
+          "graduationDegree": {
+            "type": "string",
+            "example": "B.E. Computer Science"
+          },
+          "graduationPercentage": { "type": "number", "example": 78.5 },
+          "graduationYear": { "type": "number", "example": 2018 },
+          "postGraduationCollege": {
+            "type": "string",
+            "example": "IIT Bombay"
+          },
+          "postGraduationDegree": { "type": "string", "example": "M.Tech CS" },
+          "postGraduationPercentage": { "type": "number", "example": 82.5 },
+          "postGraduationYear": { "type": "number", "example": 2020 },
+          "experienceYears": { "type": "string", "example": "2" },
+          "companyName": { "type": "string", "example": "Tech Corp" },
+          "companyRole": { "type": "string", "example": "Software Developer" },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2020-06-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2022-05-31"
+          },
+          "previousCompany": { "type": "string", "example": "Startup Inc" },
+          "previousRole": { "type": "string", "example": "Intern" },
+          "skills": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["React", "Node.js", "MongoDB"]
+          },
+          "topSkills": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["React", "Node.js"]
+          },
+          "github": { "type": "string", "example": "https://github.com/nakul" },
+          "linkedin": {
+            "type": "string",
+            "example": "https://linkedin.com/in/nakul"
+          },
+          "portfolio": { "type": "string", "example": "https://nakul.dev" },
+          "resume": { "type": "string", "example": "resume_nakul.pdf" },
+          "coverLetter": {
+            "type": "string",
+            "example": "I am excited to apply..."
+          },
+          "acceptTerms": { "type": "boolean", "example": true },
+          "confirmInformation": { "type": "boolean", "example": true },
+          "aiScore": { "type": "number", "example": 85 },
+          "status": {
+            "type": "string",
+            "enum": ["Applied", "Shortlisted", "Rejected", "Hired"],
+            "example": "Applied"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "title": { "type": "string" },
+          "profile": { "type": "string" },
+          "company": { "type": "string" },
+          "location": { "type": "string" },
+          "salary": { "type": "string" },
+          "type": { "type": "string" },
+          "skillsRequired": { "type": "array", "items": { "type": "string" } },
+          "experienceRequired": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
     }
   },
+
   "paths": {
     "/auth/register": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Register new user",
+        "summary": "Register user",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["name", "email", "password", "confirmPassword"],
                 "properties": {
                   "name": { "type": "string" },
-                  "email": { "type": "string" },
-                  "password": { "type": "string" },
-                  "confirmPassword": { "type": "string" }
-                },
-                "required": ["name", "email", "password", "confirmPassword"]
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" },
+                  "confirmPassword": { "type": "string", "format": "password" }
+                }
+              },
+              "example": {
+                "name": "Nakul Kumar",
+                "email": "nakul@gmail.com",
+                "password": "123456",
+                "confirmPassword": "123456"
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "User registered successfully" }
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          }
         }
       }
     },
@@ -59,7 +202,334 @@
     "/auth/login": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Login user and get JWT token",
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              },
+              "example": {
+                "email": "nakul@gmail.com",
+                "password": "123456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIs...",
+                  "user": {
+                    "id": "665user123",
+                    "name": "Nakul Kumar",
+                    "email": "nakul@gmail.com"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get logged in user profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
+    "/health": {
+      "get": {
+        "tags": ["MessMate"],
+        "summary": "Check API health",
+        "responses": {
+          "200": {
+            "description": "Server running",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "OK",
+                  "message": "Server is running"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/messes": {
+      "get": {
+        "tags": ["MessMate"],
+        "summary": "Get all messes",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of messes"
+          }
+        }
+      },
+      "post": {
+        "tags": ["MessMate"],
+        "summary": "Create new mess",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Student Mess",
+                "location": "Campus Area",
+                "capacity": 200,
+                "mealType": ["Breakfast", "Lunch", "Dinner"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mess created successfully"
+          }
+        }
+      }
+    },
+
+    "/messes/{id}": {
+      "get": {
+        "tags": ["MessMate"],
+        "summary": "Get mess by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single mess data"
+          },
+          "404": {
+            "description": "Mess not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["MessMate"],
+        "summary": "Update mess",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mess updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["MessMate"],
+        "summary": "Delete mess",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mess deleted"
+          }
+        }
+      }
+    },
+
+    "/jobs": {
+      "get": {
+        "tags": ["Jobs"],
+        "summary": "Get all jobs",
+        "responses": {
+          "200": {
+            "description": "Jobs list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Job" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/jobs/create": {
+      "post": {
+        "tags": ["Jobs"],
+        "summary": "Create job",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "profile", "company"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "profile": { "type": "string" },
+                  "company": { "type": "string" },
+                  "location": { "type": "string" },
+                  "salary": { "type": "string" },
+                  "type": { "type": "string" },
+                  "skillsRequired": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "experienceRequired": { "type": "string" },
+                  "description": { "type": "string" }
+                }
+              },
+              "example": {
+                "title": "Frontend Developer",
+                "profile": "React Developer",
+                "company": "Google",
+                "location": "Remote",
+                "salary": "12 LPA",
+                "type": "Full Time",
+                "skillsRequired": ["React", "JavaScript", "CSS"],
+                "experienceRequired": "2 years",
+                "description": "React developer required for exciting projects"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+
+    "/jobs/{id}": {
+      "get": {
+        "tags": ["Jobs"],
+        "summary": "Get job by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single job",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Job" }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Jobs"],
+        "summary": "Update job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Jobs"],
+        "summary": "Delete job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job deleted"
+          }
+        }
+      }
+    },
+
+    "/applications": {
+      "get": {
+        "tags": ["Applications"],
+        "summary": "Get all job applications",
+        "responses": {
+          "200": {
+            "description": "Application list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Application" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/applications/apply": {
+      "post": {
+        "tags": ["Applications"],
+        "summary": "Apply for job - Complete application with all fields",
         "requestBody": {
           "required": true,
           "content": {
@@ -67,72 +537,326 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": { "type": "string" },
-                  "password": { "type": "string" }
-                },
-                "required": ["email", "password"]
+                  "jobId": { "type": "string", "example": "665abc123" },
+                  "userId": { "type": "string", "example": "665user123" },
+                  "fullName": { "type": "string", "example": "Nakul Kumar" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "nakul@gmail.com"
+                  },
+                  "phone": { "type": "string", "example": "9876543210" },
+                  "dob": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1995-05-15"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["Male", "Female", "Other"],
+                    "example": "Male"
+                  },
+                  "address": { "type": "string", "example": "123 Main Street" },
+                  "city": { "type": "string", "example": "Mumbai" },
+                  "state": { "type": "string", "example": "Maharashtra" },
+                  "country": { "type": "string", "example": "India" },
+                  "pincode": { "type": "string", "example": "400001" },
+                  "aadhaar": { "type": "string", "example": "1234-5678-9012" },
+                  "pan": { "type": "string", "example": "ABCDE1234F" },
+                  "uan": { "type": "string", "example": "123456789012" },
+                  "tenthBoard": { "type": "string", "example": "CBSE" },
+                  "tenthPercentage": { "type": "number", "example": 88.5 },
+                  "tenthYear": { "type": "number", "example": 2012 },
+                  "twelfthBoard": { "type": "string", "example": "CBSE" },
+                  "twelfthPercentage": { "type": "number", "example": 85.5 },
+                  "twelfthYear": { "type": "number", "example": 2014 },
+                  "graduationCollege": {
+                    "type": "string",
+                    "example": "Mumbai University"
+                  },
+                  "graduationDegree": {
+                    "type": "string",
+                    "example": "B.E. Computer Science"
+                  },
+                  "graduationPercentage": { "type": "number", "example": 78.5 },
+                  "graduationYear": { "type": "number", "example": 2018 },
+                  "postGraduationCollege": {
+                    "type": "string",
+                    "example": "IIT Bombay"
+                  },
+                  "postGraduationDegree": {
+                    "type": "string",
+                    "example": "M.Tech CS"
+                  },
+                  "postGraduationPercentage": {
+                    "type": "number",
+                    "example": 82.5
+                  },
+                  "postGraduationYear": { "type": "number", "example": 2020 },
+                  "experienceYears": { "type": "string", "example": "2" },
+                  "companyName": { "type": "string", "example": "Tech Corp" },
+                  "companyRole": {
+                    "type": "string",
+                    "example": "Software Developer"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2020-06-01"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2022-05-31"
+                  },
+                  "previousCompany": {
+                    "type": "string",
+                    "example": "Startup Inc"
+                  },
+                  "previousRole": { "type": "string", "example": "Intern" },
+                  "skills": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "example": ["React", "Node.js", "MongoDB", "Express"]
+                  },
+                  "topSkills": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "example": ["React", "Node.js"]
+                  },
+                  "github": {
+                    "type": "string",
+                    "example": "https://github.com/nakulkumar"
+                  },
+                  "linkedin": {
+                    "type": "string",
+                    "example": "https://linkedin.com/in/nakulkumar"
+                  },
+                  "portfolio": {
+                    "type": "string",
+                    "example": "https://nakulkumar.dev"
+                  },
+                  "resume": {
+                    "type": "string",
+                    "example": "nakul_kumar_resume_2024.pdf"
+                  },
+                  "coverLetter": {
+                    "type": "string",
+                    "example": "Dear Hiring Manager,\n\nI am writing to express my strong interest in the Frontend Developer position. With 2 years of experience in React development, I believe I would be a great addition to your team.\n\nBest regards,\nNakul Kumar"
+                  },
+                  "acceptTerms": { "type": "boolean", "example": true },
+                  "confirmInformation": { "type": "boolean", "example": true },
+                  "aiScore": { "type": "number", "example": 92 },
+                  "status": {
+                    "type": "string",
+                    "enum": ["Applied", "Shortlisted", "Rejected", "Hired"],
+                    "example": "Applied"
+                  }
+                }
+              },
+              "example": {
+                "jobId": "665abc123",
+                "userId": "665user123",
+                "fullName": "Nakul Kumar",
+                "email": "nakul@gmail.com",
+                "phone": "9876543210",
+                "dob": "1995-05-15",
+                "gender": "Male",
+                "address": "123 Main Street, Andheri East",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "country": "India",
+                "pincode": "400001",
+                "aadhaar": "1234-5678-9012",
+                "pan": "ABCDE1234F",
+                "uan": "123456789012",
+                "tenthBoard": "CBSE",
+                "tenthPercentage": 88.5,
+                "tenthYear": 2012,
+                "twelfthBoard": "CBSE",
+                "twelfthPercentage": 85.5,
+                "twelfthYear": 2014,
+                "graduationCollege": "Mumbai University",
+                "graduationDegree": "B.E. Computer Science",
+                "graduationPercentage": 78.5,
+                "graduationYear": 2018,
+                "postGraduationCollege": "IIT Bombay",
+                "postGraduationDegree": "M.Tech Computer Science",
+                "postGraduationPercentage": 82.5,
+                "postGraduationYear": 2020,
+                "experienceYears": "2",
+                "companyName": "Tech Corp India",
+                "companyRole": "Software Developer",
+                "startDate": "2020-06-01",
+                "endDate": "2022-05-31",
+                "previousCompany": "Startup Innovations",
+                "previousRole": "Intern",
+                "skills": [
+                  "React",
+                  "Node.js",
+                  "MongoDB",
+                  "Express",
+                  "JavaScript",
+                  "HTML",
+                  "CSS"
+                ],
+                "topSkills": ["React", "Node.js", "MongoDB"],
+                "github": "https://github.com/nakulkumar",
+                "linkedin": "https://linkedin.com/in/nakulkumar",
+                "portfolio": "https://nakulkumar.dev",
+                "resume": "nakul_kumar_resume_2024.pdf",
+                "coverLetter": "Dear Hiring Manager,\n\nI am writing to express my strong interest in the Frontend Developer position at Google. With 2 years of experience in React development and a Master's degree from IIT Bombay, I believe I would be a great addition to your team.\n\nThroughout my career, I have worked on several projects including e-commerce platforms and dashboard applications. My technical skills include React, Node.js, and MongoDB.\n\nI am excited about the opportunity to contribute to Google's innovative projects and would welcome the chance to discuss my qualifications further.\n\nBest regards,\nNakul Kumar",
+                "acceptTerms": true,
+                "confirmInformation": true,
+                "aiScore": 92,
+                "status": "Applied"
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Returns JWT token" }
+          "201": {
+            "description": "Application submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "application": {
+                      "$ref": "#/components/schemas/Application"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Application submitted successfully",
+                  "application": {
+                    "_id": "665abc123def456",
+                    "jobId": "665abc123",
+                    "userId": "665user123",
+                    "fullName": "Nakul Kumar",
+                    "email": "nakul@gmail.com",
+                    "status": "Applied",
+                    "createdAt": "2024-05-30T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
 
-    "/health": {
-      "get": {
-        "tags": ["MessMate API"],
-        "summary": "Check server health",
-        "responses": {
-          "200": { "description": "Server is healthy" }
-        }
-      }
-    },
-
-    "/messes": {
-      "get": {
-        "tags": ["MessMate API"],
-        "summary": "Get all messes (Protected)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "List of messes" }
-        }
-      },
-      "post": {
-        "tags": ["MessMate API"],
-        "summary": "Create new mess (Protected)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "201": { "description": "Mess created successfully" }
-        }
-      }
-    },
-
-    "/messes/{id}": {
-      "get": {
-        "tags": ["MessMate API"],
-        "summary": "Get mess by ID (Protected)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "Single mess" }
-        }
-      },
+    "/applications/{id}": {
       "put": {
-        "tags": ["MessMate API"],
-        "summary": "Update mess by ID (Protected)",
-        "security": [{ "bearerAuth": [] }],
+        "tags": ["Applications"],
+        "summary": "Update application status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["Applied", "Shortlisted", "Rejected", "Hired"]
+                  }
+                }
+              },
+              "example": {
+                "status": "Shortlisted"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Mess updated successfully" }
+          "200": {
+            "description": "Application updated successfully"
+          },
+          "404": {
+            "description": "Application not found"
+          }
         }
       },
       "delete": {
-        "tags": ["MessMate API"],
-        "summary": "Delete mess by ID (Protected)",
-        "security": [{ "bearerAuth": [] }],
+        "tags": ["Applications"],
+        "summary": "Delete application",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
         "responses": {
-          "200": { "description": "Mess deleted successfully" }
+          "200": {
+            "description": "Application deleted successfully"
+          },
+          "404": {
+            "description": "Application not found"
+          }
+        }
+      }
+    },
+
+    "/dashboard/stats": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get dashboard statistics",
+        "responses": {
+          "200": {
+            "description": "Dashboard stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalJobs": { "type": "number" },
+                    "totalApplicants": { "type": "number" },
+                    "avgScore": { "type": "number" },
+                    "applicationsByStatus": {
+                      "type": "object",
+                      "properties": {
+                        "applied": { "type": "number" },
+                        "shortlisted": { "type": "number" },
+                        "rejected": { "type": "number" },
+                        "hired": { "type": "number" }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "totalJobs": 10,
+                  "totalApplicants": 45,
+                  "avgScore": 82,
+                  "applicationsByStatus": {
+                    "applied": 30,
+                    "shortlisted": 10,
+                    "rejected": 4,
+                    "hired": 1
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
