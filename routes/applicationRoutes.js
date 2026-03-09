@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   applyJob,
   getApplications,
@@ -9,16 +10,22 @@ const {
   getApplicationsByJob,
   getApplicationsByUser,
   getApplicationStats,
+  getMyApplications,
 } = require("../controllers/applicationController");
+
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Stats route
 router.get("/stats", getApplicationStats);
 
-// Main routes - POST /applications (for applying)
-router.route("/").get(getApplications).post(applyJob); // This handles POST to /applications
+// Logged-in user applications
+router.get("/my", authMiddleware, getMyApplications);
 
-// Alternative: If you want /applications/apply
-router.post("/apply", applyJob); // This handles POST to /applications/apply
+// Main routes
+router.route("/").get(getApplications).post(applyJob);
+
+// Alternative apply route
+router.post("/apply", applyJob);
 
 // User specific applications
 router.get("/user/:userId", getApplicationsByUser);
