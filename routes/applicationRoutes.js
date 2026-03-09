@@ -14,26 +14,27 @@ const {
 } = require("../controllers/applicationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const uploadResume = require("../middleware/uploadResume");
 
-// Stats route
+// Stats
 router.get("/stats", getApplicationStats);
 
-// Logged-in user applications
+// Logged-in user
 router.get("/my", authMiddleware, getMyApplications);
 
-// Main routes
-router.route("/").get(getApplications).post(applyJob);
+// Get all applications
+router.get("/", getApplications);
 
-// Alternative apply route
-router.post("/apply", applyJob);
+// Apply job (resume upload + parsing)
+router.post("/apply", uploadResume.single("resume"), applyJob);
 
-// User specific applications
+// User applications
 router.get("/user/:userId", getApplicationsByUser);
 
-// Job specific applications
+// Job applications
 router.get("/job/:jobId", getApplicationsByJob);
 
-// Single application routes
+// Single application
 router
   .route("/:id")
   .get(getApplicationById)
