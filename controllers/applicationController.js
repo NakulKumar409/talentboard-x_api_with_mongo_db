@@ -418,3 +418,29 @@ exports.getApplicationStats = async (req, res) => {
     });
   }
 };
+
+// Get logged in user's applications
+exports.getMyApplications = async (req, res) => {
+  try {
+
+    const userId = req.user.userId;
+
+    const applications = await Application.find({ userId })
+      .populate("jobId", "title company location salary type")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      count: applications.length,
+      applications,
+    });
+
+  } catch (error) {
+    console.error("Error fetching user applications:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
