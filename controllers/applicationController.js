@@ -2,20 +2,22 @@ const Application = require("../models/Application");
 const Job = require("../models/job");
 const atsScore = require("../utils/atsScore");
 const mongoose = require("mongoose");
+const pdfParse = require("pdf-parse");
+const fs = require("fs");
+const extractResumeData = require("../utils/resumeParser");
+
 
 // Apply for a job
 exports.applyJob = async (req, res) => {
   try {
     const { jobId, userId, skills, ...otherData } = req.body;
 
-    // Validate required fields
     if (!jobId || !userId) {
       return res.status(400).json({
         message: "jobId and userId are required",
       });
     }
 
-    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({
         message: "Invalid job ID format",
@@ -28,38 +30,48 @@ exports.applyJob = async (req, res) => {
       });
     }
 
-    // Check if job exists
     const job = await Job.findById(jobId);
+
     if (!job) {
       return res.status(404).json({
         message: "Job not found",
       });
     }
 
-    // Check if already applied
     const existingApplication = await Application.findOne({ jobId, userId });
+
     if (existingApplication) {
       return res.status(400).json({
         message: "You have already applied for this job",
       });
     }
 
-    // Calculate ATS score
-    let score = 0;
-    try {
-      score = atsScore(job.skillsRequired || [], skills || []);
-    } catch (error) {
-      console.error("ATS Score calculation error:", error);
-      // Default score if calculation fails
-      score = 50;
+    let parsedData = {};
+
+    if (req.file) {
+      const buffer = fs.readFileSync(req.file.path);
+
+      const pdfData = await pdfParse(buffer);
+
+      parsedData = extractResumeData(pdfData.text);
     }
 
-    // Create application
+    const score = atsScore(job.skillsRequired || [], skills || []);
+
     const application = await Application.create({
       jobId,
       userId,
+
+      fullName: otherData.fullName || parsedData.fullName,
+      email: otherData.email || parsedData.email,
+      phone: otherData.phone || parsedData.phone,
+
+      resume: req.file ? req.file.path : null,
+
       skills,
+
       ...otherData,
+
       aiScore: score,
       status: "Applied",
     });
@@ -71,23 +83,6 @@ exports.applyJob = async (req, res) => {
     });
   } catch (error) {
     console.error("Apply job error:", error);
-
-    // Handle validation errors
-    if (error.name === "ValidationError") {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: Object.values(error.errors).map((err) => err.message),
-      });
-    }
-
-    // Handle duplicate key error
-    if (error.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: "Duplicate application - You may have already applied",
-      });
-    }
 
     res.status(500).json({
       success: false,

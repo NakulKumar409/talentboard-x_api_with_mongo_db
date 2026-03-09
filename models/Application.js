@@ -5,11 +5,13 @@ const applicationSchema = new mongoose.Schema(
     jobId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Job",
+      required: true,
     },
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
 
     fullName: String,
@@ -69,10 +71,22 @@ const applicationSchema = new mongoose.Schema(
     acceptTerms: Boolean,
     confirmInformation: Boolean,
 
-    aiScore: Number,
+    aiScore: {
+      type: Number,
+      default: 0,
+    },
 
+    // APPLICATION STATUS
     status: {
       type: String,
+      enum: [
+        "Applied",
+        "Under Review",
+        "Shortlisted",
+        "Interview Scheduled",
+        "Rejected",
+        "Hired",
+      ],
       default: "Applied",
     },
   },
