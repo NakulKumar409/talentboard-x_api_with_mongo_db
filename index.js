@@ -8,6 +8,7 @@ const swaggerDocument = require("./swagger.json");
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -27,19 +28,22 @@ app.use("/dashboard", dashboardRoutes);
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Root
+// Root route
 app.get("/", (req, res) => {
-  res.send("TalentBoard API Running");
+  res.send("TalentBoard API Running 🚀");
 });
 
-// MongoDB
+// PORT fix (Render ke liye important)
+const PORT = process.env.PORT || 3004;
+
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("MongoDB Atlas Connected ✅");
 
-    app.listen(process.env.PORT, () => {
-      console.log(`Server running at http://localhost:${process.env.PORT}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
