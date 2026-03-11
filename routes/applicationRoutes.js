@@ -11,10 +11,11 @@ const {
   getApplicationsByUser,
   getApplicationStats,
   getMyApplications,
+  parseResume, // ✅ ADD THIS
 } = require("../controllers/applicationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
-const uploadResume = require("../middleware/uploadResume");
+const { uploadDisk } = require("../middleware/uploadResume");
 
 // Stats
 router.get("/stats", getApplicationStats);
@@ -25,8 +26,16 @@ router.get("/my", authMiddleware, getMyApplications);
 // Get all applications
 router.get("/", getApplications);
 
-// Apply job (resume upload + parsing)
-router.post("/apply", uploadResume.single("resume"), applyJob);
+// ✅ ADD THIS ROUTE
+router.post(
+  "/parse-resume",
+  authMiddleware,
+  uploadDisk.single("resume"),
+  parseResume
+);
+
+// Apply job
+router.post("/apply", authMiddleware, uploadDisk.single("resume"), applyJob);
 
 // User applications
 router.get("/user/:userId", getApplicationsByUser);
