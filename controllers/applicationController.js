@@ -6,6 +6,8 @@ const pdf = require('pdf-parse'); // FIXED: Changed from pdfParse
 const fs = require("fs");
 const extractResumeData = require("../utils/resumeParser");
 
+const path = require("path");
+
 // ==============================================
 // API 1: APPLY JOB WITH RESUME UPLOAD
 // ==============================================
@@ -555,6 +557,53 @@ exports.getMyApplications = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal server error",
+    });
+  }
+};
+
+exports.downloadResume = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log("Application ID:", id);
+
+    const application = await Application.findById(id);
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    console.log("Application:", application);
+
+    if (!application.resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found in DB",
+      });
+    }
+
+    const filePath = path.join(__dirname, "..", application.resume);
+
+    console.log("File path:", filePath);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume file not found on server",
+      });
+    }
+
+    res.download(filePath);
+  } catch (error) {
+    console.error("Download error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to download resume",
+      error: error.message,
     });
   }
 };

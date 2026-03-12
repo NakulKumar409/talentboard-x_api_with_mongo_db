@@ -13,10 +13,11 @@ const {
   getMyApplications,
   parseResume, // ✅ ADD THIS
 } = require("../controllers/applicationController");
+const applicationController = require("../controllers/applicationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 const { uploadDisk } = require("../middleware/uploadResume");
-
+router.get("/:id/resume", applicationController.downloadResume);
 // Stats
 router.get("/stats", getApplicationStats);
 
