@@ -62,7 +62,7 @@ exports.applyJob = async (req, res) => {
     // Handle resume file
     let resumePath = null;
     if (req.file) {
-      resumePath = req.file.path;
+    resumePath = "uploads/resumes/" + req.file.filename;
       console.log("📁 Resume saved at:", resumePath);
     }
 
@@ -560,28 +560,14 @@ exports.getMyApplications = async (req, res) => {
     });
   }
 };
-
 exports.downloadResume = async (req, res) => {
   try {
-    const { id } = req.params;
+    const application = await Application.findById(req.params.id);
 
-    console.log("Application ID:", id);
-
-    const application = await Application.findById(id);
-
-    if (!application) {
+    if (!application || !application.resume) {
       return res.status(404).json({
         success: false,
-        message: "Application not found",
-      });
-    }
-
-    console.log("Application:", application);
-
-    if (!application.resume) {
-      return res.status(404).json({
-        success: false,
-        message: "Resume not found in DB",
+        message: "Resume not found",
       });
     }
 
@@ -598,12 +584,11 @@ exports.downloadResume = async (req, res) => {
 
     res.download(filePath);
   } catch (error) {
-    console.error("Download error:", error);
+    console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Failed to download resume",
-      error: error.message,
+      message: "Download failed",
     });
   }
 };
