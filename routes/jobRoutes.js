@@ -14,7 +14,8 @@ router.post("/create", createJob);
 
 router.get("/", getJobs);
 
-router.get("/:id", getJobById);
+
+router.get("/:id([0-9a-fA-F]{24})", getJobById);
 
 router.put("/:id", updateJob);
 
