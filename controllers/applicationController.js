@@ -62,7 +62,7 @@ exports.applyJob = async (req, res) => {
     // Handle resume file
     let resumePath = null;
     if (req.file) {
-    resumePath = "uploads/resumes/" + req.file.filename;
+      resumePath = req.file.path;
       console.log("📁 Resume saved at:", resumePath);
     }
 
@@ -202,20 +202,14 @@ exports.parseResume = async (req, res) => {
 
     const filePath = req.file.path;
 
-    console.log("File:", req.file.originalname);
-    console.log("Path:", filePath);
-
     const dataBuffer = fs.readFileSync(filePath);
 
-    const data = await pdf(dataBuffer);
-
-    console.log("PDF Parsed Successfully");
+    const data = await pdf(dataBuffer); // ✅ working
 
     const extracted = extractResumeData(data.text);
 
     res.status(200).json({
       success: true,
-      message: "Resume parsed successfully",
       parsedData: extracted,
     });
   } catch (error) {
@@ -223,8 +217,7 @@ exports.parseResume = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Resume parsing failed",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -560,14 +553,28 @@ exports.getMyApplications = async (req, res) => {
     });
   }
 };
+
 exports.downloadResume = async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id);
+    const { id } = req.params;
 
-    if (!application || !application.resume) {
+    console.log("Application ID:", id);
+
+    const application = await Application.findById(id);
+
+    if (!application) {
       return res.status(404).json({
         success: false,
-        message: "Resume not found",
+        message: "Application not found",
+      });
+    }
+
+    console.log("Application:", application);
+
+    if (!application.resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found in DB",
       });
     }
 
@@ -584,11 +591,12 @@ exports.downloadResume = async (req, res) => {
 
     res.download(filePath);
   } catch (error) {
-    console.error(error);
+    console.error("Download error:", error);
 
     res.status(500).json({
       success: false,
-      message: "Download failed",
+      message: "Failed to download resume",
+      error: error.message,
     });
   }
 };
