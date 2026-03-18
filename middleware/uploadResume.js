@@ -1,27 +1,18 @@
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../utils/cloudinary");
 
-// folder auto create
-const uploadPath = path.join(__dirname, "../uploads/resumes");
-
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-// storage config
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadPath); // ✅ correct path
-  },
-  filename: function (req, file, cb) {
-    // ✅ correct key
-    const uniqueName = Date.now() + path.extname(file.originalname);
-    cb(null, uniqueName);
+// cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "resumes",
+    resource_type: "raw", // 🔥 MOST IMPORTANT
+    format: "pdf", // ✅ force PDF
+    public_id: (req, file) => Date.now(),
   },
 });
-
-// file filter
+// file filter (same rakha 👍)
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
@@ -30,11 +21,11 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const uploadDisk = multer({
+const uploadCloud = multer({
   storage,
   fileFilter,
 });
 
 module.exports = {
-  uploadDisk,
+  uploadCloud,
 };
