@@ -12,61 +12,33 @@ const {
   getApplicationStats,
   getMyApplications,
   parseResume,
+  downloadResume,
 } = require("../controllers/applicationController");
 
-const applicationController = require("../controllers/applicationController");
-
 const authMiddleware = require("../middleware/authMiddleware");
-const { uploadDisk } = require("../middleware/uploadResume");
+const { uploadCloud } = require("../middleware/uploadResume");
 
-// ==============================
-// STATS
-// ==============================
 router.get("/stats", getApplicationStats);
 
-// ==============================
-// LOGGED-IN USER APPLICATIONS
-// ==============================
 router.get("/my", authMiddleware, getMyApplications);
 
-// ==============================
-// GET ALL APPLICATIONS
-// ==============================
 router.get("/", getApplications);
 
-// ==============================
-// PARSE RESUME (AI Resume Parser)
-// ==============================
 router.post(
   "/parse-resume",
   authMiddleware,
-  uploadDisk.single("resume"),
+  uploadCloud.single("resume"),
   parseResume
 );
 
-// ==============================
-// APPLY FOR JOB
-// ==============================
-router.post("/apply", authMiddleware, uploadDisk.single("resume"), applyJob);
+router.post("/apply", authMiddleware, uploadCloud.single("resume"), applyJob);
 
-// ==============================
-// USER APPLICATIONS
-// ==============================
 router.get("/user/:userId", getApplicationsByUser);
 
-// ==============================
-// JOB APPLICATIONS
-// ==============================
 router.get("/job/:jobId", getApplicationsByJob);
 
-// ==============================
-// DOWNLOAD RESUME
-// ==============================
-router.get("/:id/resume", applicationController.downloadResume);
+router.get("/:id/resume", downloadResume);
 
-// ==============================
-// SINGLE APPLICATION CRUD
-// ==============================
 router
   .route("/:id")
   .get(getApplicationById)
