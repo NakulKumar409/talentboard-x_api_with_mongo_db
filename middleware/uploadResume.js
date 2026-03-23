@@ -7,12 +7,12 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "resumes",
-    resource_type: "raw", // 🔥 MOST IMPORTANT
-    format: "pdf", // ✅ force PDF
+    resource_type: "raw", 
+    format: "pdf", 
     public_id: (req, file) => Date.now(),
   },
 });
-// file filter (same rakha 👍)
+
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
