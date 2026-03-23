@@ -2,7 +2,7 @@ const Application = require("../models/Application");
 const Job = require("../models/job");
 const atsScore = require("../utils/atsScore");
 const mongoose = require("mongoose");
-const pdf = require('pdf-parse'); // FIXED: Changed from pdfParse
+const pdf = require("pdf-parse"); // FIXED: Changed from pdfParse
 const fs = require("fs");
 const extractResumeData = require("../utils/resumeParser");
 
@@ -62,17 +62,15 @@ exports.applyJob = async (req, res) => {
     // Handle resume file
     let resumePath = null;
     if (req.file) {
-      resumePath = req.file.path;
-      console.log("📁 Resume saved at:", resumePath);
+      resumePath = req.file.originalname;
     }
-
     // Parse skills if sent as JSON string
     let skillsArray = [];
     if (req.body.skills) {
       try {
         skillsArray = JSON.parse(req.body.skills);
       } catch (e) {
-        skillsArray = req.body.skills.split(',').map(s => s.trim());
+        skillsArray = req.body.skills.split(",").map((s) => s.trim());
       }
     }
 
@@ -82,7 +80,7 @@ exports.applyJob = async (req, res) => {
       try {
         topSkillsArray = JSON.parse(req.body.topSkills);
       } catch (e) {
-        topSkillsArray = req.body.topSkills.split(',').map(s => s.trim());
+        topSkillsArray = req.body.topSkills.split(",").map((s) => s.trim());
       }
     }
 
@@ -115,26 +113,26 @@ exports.applyJob = async (req, res) => {
       aadhaar: req.body.aadhaar || "",
       pan: req.body.pan || "",
       uan: req.body.uan || "",
-      
+
       // Education - with safe number conversion
       tenthBoard: req.body.tenthBoard || "",
       tenthPercentage: toNumber(req.body.tenthPercentage),
       tenthYear: toNumber(req.body.tenthYear),
-      
+
       twelfthBoard: req.body.twelfthBoard || "",
       twelfthPercentage: toNumber(req.body.twelfthPercentage),
       twelfthYear: toNumber(req.body.twelfthYear),
-      
+
       graduationCollege: req.body.graduationCollege || "",
       graduationDegree: req.body.graduationDegree || "",
       graduationPercentage: toNumber(req.body.graduationPercentage),
       graduationYear: toNumber(req.body.graduationYear),
-      
+
       postGraduationCollege: req.body.postGraduationCollege || "",
       postGraduationDegree: req.body.postGraduationDegree || "",
       postGraduationPercentage: toNumber(req.body.postGraduationPercentage),
       postGraduationYear: toNumber(req.body.postGraduationYear),
-      
+
       // Experience
       experienceYears: req.body.experienceYears || "",
       companyName: req.body.companyName || "",
@@ -143,24 +141,27 @@ exports.applyJob = async (req, res) => {
       endDate: req.body.endDate || "",
       previousCompany: req.body.previousCompany || "",
       previousRole: req.body.previousRole || "",
-      
+
       // Skills
       skills: skillsArray,
       topSkills: topSkillsArray,
-      
+
       // Social Links
       github: req.body.github || "",
       linkedin: req.body.linkedin || "",
       portfolio: req.body.portfolio || "",
-      
+
       // Documents
       resume: resumePath,
       coverLetter: req.body.coverLetter || "",
-      
+
       // Terms
-      acceptTerms: req.body.acceptTerms === 'true' || req.body.acceptTerms === true,
-      confirmInformation: req.body.confirmInformation === 'true' || req.body.confirmInformation === true,
-      
+      acceptTerms:
+        req.body.acceptTerms === "true" || req.body.acceptTerms === true,
+      confirmInformation:
+        req.body.confirmInformation === "true" ||
+        req.body.confirmInformation === true,
+
       // Status and Score
       aiScore: score,
       status: "Applied",
@@ -176,7 +177,6 @@ exports.applyJob = async (req, res) => {
       message: "Application submitted successfully",
       application,
     });
-
   } catch (error) {
     console.error("❌ Apply job error:", error);
     res.status(500).json({
