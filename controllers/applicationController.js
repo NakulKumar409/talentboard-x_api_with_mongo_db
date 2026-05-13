@@ -17,7 +17,10 @@ exports.applyJob = async (req, res) => {
     console.log("File:", req.file ? req.file.originalname : "No file");
     console.log("Body fields:", Object.keys(req.body));
 
-    const { jobId, userId, ...otherData } = req.body;
+    const { jobId, ...otherData } = req.body;
+
+    // Get userId from token
+    const userId = req.user.userId || req.user.id;
 
     // Validation
     if (!jobId || !userId) {
@@ -43,6 +46,7 @@ exports.applyJob = async (req, res) => {
 
     // Check if job exists
     const job = await Job.findById(jobId);
+
     if (!job) {
       return res.status(404).json({
         success: false,
@@ -50,8 +54,12 @@ exports.applyJob = async (req, res) => {
       });
     }
 
-    // Check for duplicate application
-    const existingApplication = await Application.findOne({ jobId, userId });
+    // Check duplicate application
+    const existingApplication = await Application.findOne({
+      jobId,
+      userId,
+    });
+
     if (existingApplication) {
       return res.status(400).json({
         success: false,
@@ -59,13 +67,16 @@ exports.applyJob = async (req, res) => {
       });
     }
 
-    // Handle resume file
+    // Resume handling
     let resumePath = null;
+
     if (req.file) {
       resumePath = req.file.originalname;
     }
-    // Parse skills if sent as JSON string
+
+    // Parse skills
     let skillsArray = [];
+
     if (req.body.skills) {
       try {
         skillsArray = JSON.parse(req.body.skills);
@@ -74,8 +85,9 @@ exports.applyJob = async (req, res) => {
       }
     }
 
-    // Parse topSkills if sent as JSON string
+    // Parse top skills
     let topSkillsArray = [];
+
     if (req.body.topSkills) {
       try {
         topSkillsArray = JSON.parse(req.body.topSkills);
@@ -84,22 +96,25 @@ exports.applyJob = async (req, res) => {
       }
     }
 
-    // Calculate AI score
+    // ATS Score
     const score = atsScore(job.skillsRequired || [], skillsArray || []);
 
-    // Helper function to safely convert to number
+    // Safe number converter
     const toNumber = (value) => {
       if (!value || value === "" || value === "null" || value === "undefined") {
         return 0;
       }
+
       const num = Number(value);
+
       return isNaN(num) ? 0 : num;
     };
 
-    // Prepare application data with safe number conversion
+    // Final application object
     const applicationData = {
       jobId,
       userId,
+
       fullName: req.body.fullName || "",
       email: req.body.email || "",
       phone: req.body.phone || "",
@@ -114,7 +129,7 @@ exports.applyJob = async (req, res) => {
       pan: req.body.pan || "",
       uan: req.body.uan || "",
 
-      // Education - with safe number conversion
+      // Education
       tenthBoard: req.body.tenthBoard || "",
       tenthPercentage: toNumber(req.body.tenthPercentage),
       tenthYear: toNumber(req.body.tenthYear),
@@ -146,40 +161,41 @@ exports.applyJob = async (req, res) => {
       skills: skillsArray,
       topSkills: topSkillsArray,
 
-      // Social Links
+      // Links
       github: req.body.github || "",
       linkedin: req.body.linkedin || "",
       portfolio: req.body.portfolio || "",
 
-      // Documents
+      // Resume
       resume: resumePath,
       coverLetter: req.body.coverLetter || "",
 
       // Terms
       acceptTerms:
         req.body.acceptTerms === "true" || req.body.acceptTerms === true,
+
       confirmInformation:
         req.body.confirmInformation === "true" ||
         req.body.confirmInformation === true,
 
-      // Status and Score
+      // Score & Status
       aiScore: score,
       status: "Applied",
     };
 
     console.log("📦 Saving application...");
 
-    // Save to database
     const application = await Application.create(applicationData);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Application submitted successfully",
       application,
     });
   } catch (error) {
     console.error("❌ Apply job error:", error);
-    res.status(500).json({
+
+    return res.status(500).json({
       success: false,
       message: "Internal server error",
       error: error.message,
